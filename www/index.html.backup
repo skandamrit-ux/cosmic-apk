@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COSMIC AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050914;color:#eaf2ff;font-family:Arial,sans-serif;height:100vh}
+header{padding:18px 16px;border-bottom:1px solid #1b2942;background:#08101f}
+h1{margin:0;font-size:22px}
+#status{font-size:12px;color:#55e6a5;margin-top:5px}
+#chat{height:calc(100vh - 155px);overflow:auto;padding:16px}
+.msg{padding:12px 14px;margin:8px 0;border-radius:14px;max-width:88%;white-space:pre-wrap}
+.user{margin-left:auto;background:#18345e}
+.ai{background:#111d30}
+#bar{position:fixed;bottom:0;left:0;right:0;padding:10px;background:#08101f;display:flex;gap:8px}
+input{flex:1;padding:13px;border-radius:12px;border:1px solid #263957;background:#0d1728;color:white;font-size:16px}
+button{padding:0 16px;border:0;border-radius:12px;background:#3478ff;color:white;font-weight:bold}
+#new{position:absolute;right:12px;top:14px;padding:8px 12px}
+</style>
+</head>
+
+<body>
+<header>
+<h1>🚀 COSMIC AI</h1>
+<div id="status">● Connecting...</div>
+<button id="new" onclick="newChat()">NEW</button>
+</header>
+
+<div id="chat"></div>
+
+<div id="bar">
+<input id="input" placeholder="Ask COSMIC..." autocomplete="off">
+<button onclick="send()">SEND</button>
+</div>
+
+<script>
+const API="http://127.0.0.1:8000";
+
+const chat=document.getElementById("chat");
+const input=document.getElementById("input");
+const status=document.getElementById("status");
+
+let history=JSON.parse(localStorage.getItem("cosmic_chat")||"[]");
+
+function save(){
+    localStorage.setItem("cosmic_chat",JSON.stringify(history));
+}
+
+function add(text,cls,saveMsg=true){
+    const d=document.createElement("div");
+    d.className="msg "+cls;
+    d.textContent=text;
+    chat.appendChild(d);
+    chat.scrollTop=chat.scrollHeight;
+
+    if(saveMsg){
+        history.push({
+            role:cls==="user"?"user":"model",
+            content:text
+        });
+        save();
+    }
+}
+
+function restore(){
+    chat.innerHTML="";
+    for(const m of history){
+        const d=document.createElement("div");
+        d.className="msg "+(m.role==="user"?"user":"ai");
+        d.textContent=m.content;
+        chat.appendChild(d);
+    }
+    chat.scrollTop=chat.scrollHeight;
+}
+
+async function check(){
+    try{
+        const r=await fetch(API+"/api/health");
+        const x=await r.json();
+        status.textContent=x.success?"● COSMIC ONLINE":"● COSMIC ERROR";
+    }catch(e){
+        status.textContent="● BACKEND OFFLINE";
+    }
+}
+
+async function send(){
+    const message=input.value.trim();
+    if(!message)return;
+
+    input.value="";
+    add(message,"user");
+
+    const thinking=document.createElement("div");
+    thinking.className="msg ai";
+    thinking.textContent="Thinking...";
+    chat.appendChild(thinking);
+    chat.scrollTop=chat.scrollHeight;
+
+    try{
+        const r=await fetch(API+"/api/chat",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                message,
+                provider:"gemini",
+                history:history.slice(-20)
+            })
+        });
+
+        const x=await r.json();
+        thinking.remove();
+
+        if(x.success){
+            add(x.message,"ai");
+        }else{
+            add("COSMIC ERROR: "+(x.error||"Unknown error"),"ai");
+        }
+
+    }catch(e){
+        thinking.remove();
+        add("Connection error: "+e.message,"ai");
+    }
+}
+
+function newChat(){
+    if(!confirm("Start a new chat? Saved conversation on this device will be cleared."))return;
+    history=[];
+    save();
+    chat.innerHTML="";
+}
+
+input.addEventListener("keydown",e=>{
+    if(e.key==="Enter")send();
+});
+
+restore();
+check();
+setInterval(check,5000);
+</script>
+</body>
+</html>

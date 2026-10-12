@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#02060a">
+    <title>COSMIC — AI Operating System</title>
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+<div id="cosmic">
+
+    <!-- AMBIENT HUD -->
+    <div class="hud-grid"></div>
+    <div class="scanline"></div>
+    <div class="ambient-glow glow-a"></div>
+    <div class="ambient-glow glow-b"></div>
+
+    <!-- TOP COMMAND BAR -->
+    <header class="topbar">
+
+        <div class="identity">
+            <div class="cosmic-mark">
+                <div class="mark-ring ring-a"></div>
+                <div class="mark-ring ring-b"></div>
+                <div class="mark-core"></div>
+            </div>
+
+            <div class="identity-text">
+                <div class="system-name">COSMIC</div>
+                <div class="system-type">PERSONAL ARTIFICIAL INTELLIGENCE</div>
+            </div>
+        </div>
+
+        <div class="top-telemetry">
+            <div class="telemetry-item">
+                <span class="telemetry-label">CORE</span>
+                <span class="online-value"><i></i> ONLINE</span>
+            </div>
+
+            <div class="telemetry-item desktop-only">
+                <span class="telemetry-label">MODE</span>
+                <span id="topMode">AUTO</span>
+            </div>
+
+            <div class="telemetry-item desktop-only">
+                <span class="telemetry-label">TIME</span>
+                <span id="clock">--:--:--</span>
+            </div>
+
+            <button id="systemMenu" class="hud-button">☰</button>
+        </div>
+
+    </header>
+
+
+    <!-- MAIN HUD -->
+    <main class="hud-main">
+
+        <!-- LEFT SYSTEM RAIL -->
+        <aside class="left-rail">
+
+            <div class="rail-title">SYSTEM</div>
+
+            <button class="rail-item active" data-view="command">
+                <span class="rail-icon">◉</span>
+                <span>COMMAND</span>
+            </button>
+
+            <button class="rail-item" data-view="models">
+                <span class="rail-icon">◇</span>
+                <span>MODELS</span>
+            </button>
+
+            <button class="rail-item" data-view="memory">
+                <span class="rail-icon">◎</span>
+                <span>MEMORY</span>
+            </button>
+
+            <button class="rail-item" data-view="research">
+                <span class="rail-icon">⌕</span>
+                <span>RESEARCH</span>
+            </button>
+
+            <button class="rail-item" data-view="tools">
+                <span class="rail-icon">⌘</span>
+                <span>TOOLS</span>
+            </button>
+
+            <button class="rail-item" data-view="devices">
+                <span class="rail-icon">▣</span>
+                <span>DEVICES</span>
+            </button>
+
+            <div class="rail-spacer"></div>
+
+            <button class="rail-item" data-view="settings">
+                <span class="rail-icon">⚙</span>
+                <span>CONFIG</span>
+            </button>
+
+        </aside>
+
+
+        <!-- CENTRAL CORE -->
+        <section class="core-stage">
+
+            <div class="stage-header">
+                <div>
+                    <span class="micro-label">PRIMARY INTERFACE</span>
+                    <h1>COMMAND CORE</h1>
+                </div>
+
+                <div class="session-state">
+                    <span class="state-dot"></span>
+                    <span id="sessionState">STANDBY</span>
+                </div>
+            </div>
+
+
+            <!-- AI CORE VISUAL -->
+            <div class="ai-core-area">
+
+                <div class="core-telemetry top-left">
+                    <span>NEURAL CORE</span>
+                    <strong id="coreLoad">READY</strong>
+                </div>
+
+                <div class="core-telemetry top-right">
+                    <span>ROUTER</span>
+                    <strong id="routerState">AUTO</strong>
+                </div>
+
+                <div class="core-orbit orbit-one"></div>
+                <div class="core-orbit orbit-two"></div>
+                <div class="core-orbit orbit-three"></div>
+
+                <div class="core-crosshair horizontal"></div>
+                <div class="core-crosshair vertical"></div>
+
+                <div class="ai-core">
+
+                    <div class="core-ring outer-ring"></div>
+                    <div class="core-ring middle-ring"></div>
+                    <div class="core-ring inner-ring"></div>
+
+                    <div class="core-energy">
+                        <div class="energy-point"></div>
+                        <div class="energy-point p2"></div>
+                        <div class="energy-point p3"></div>
+                        <div class="energy-point p4"></div>
+                    </div>
+
+                    <div class="core-symbol">
+                        <span>C</span>
+                    </div>
+
+                </div>
+
+                <div class="core-caption">
+                    <span class="core-caption-main">COSMIC</span>
+                    <span class="core-caption-sub">INTELLIGENCE CORE</span>
+                </div>
+
+                <div class="core-telemetry bottom-left">
+                    <span>LATENCY</span>
+                    <strong id="latency">-- ms</strong>
+                </div>
+
+                <div class="core-telemetry bottom-right">
+                    <span>STATUS</span>
+                    <strong class="healthy">NOMINAL</strong>
+                </div>
+
+            </div>
+
+
+            <!-- ROUTING PIPELINE -->
+            <div class="pipeline">
+
+                <div class="pipeline-node active">
+                    <span>01</span>
+                    <strong>INPUT</strong>
+                </div>
+
+                <div class="pipeline-line"></div>
+
+                <div class="pipeline-node">
+                    <span>02</span>
+                    <strong>ANALYZE</strong>
+                </div>
+
+                <div class="pipeline-line"></div>
+
+                <div class="pipeline-node">
+                    <span>03</span>
+                    <strong>ROUTE</strong>
+                </div>
+
+                <div class="pipeline-line"></div>
+
+                <div class="pipeline-node">
+                    <span>04</span>
+                    <strong>EXECUTE</strong>
+                </div>
+
+                <div class="pipeline-line"></div>
+
+                <div class="pipeline-node">
+                    <span>05</span>
+                    <strong>VERIFY</strong>
+                </div>
+
+            </div>
+
+
+            <!-- RESPONSE STREAM -->
+            <div id="responseStream" class="response-stream">
+
+                <div id="emptyCore" class="core-message">
+                    <span class="message-line"></span>
+                    <div>
+                        <strong>SYSTEM READY</strong>
+                        <p>Awaiting command.</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- COMMAND INPUT -->
+            <div class="command-zone">
+
+                <div class="command-prefix">
+                    <span class="command-symbol">◉</span>
+                    <span>COMMAND</span>
+                </div>
+
+                <div class="command-box">
+
+                    <textarea
+                        id="messageInput"
+                        placeholder="Speak or enter a command..."
+                        rows="1"
+                        autocomplete="off"
+                        spellcheck="false"
+                    ></textarea>
+
+                    <div class="command-actions">
+
+                        <button id="voiceButton" class="action-button" title="Voice">
+                            <span>◌</span>
+                        </button>
+
+                        <button id="attachButton" class="action-button" title="Attach">
+                            <span>＋</span>
+                        </button>
+
+                        <button id="sendButton" class="execute-button">
+                            <span>EXECUTE</span>
+                            <b>➜</b>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="command-footer">
+                    <span id="commandMode">AUTO ROUTING</span>
+                    <span>•</span>
+                    <span id="selectedModel">BEST AVAILABLE MODEL</span>
+                    <span class="footer-spacer"></span>
+                    <span id="connection">CONNECTED</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT TELEMETRY PANEL -->
+        <aside class="right-panel">
+
+            <!-- ACTIVE INTELLIGENCE -->
+            <section class="hud-panel">
+
+                <div class="panel-heading">
+                    <span>ACTIVE INTELLIGENCE</span>
+                    <i></i>
+                </div>
+
+                <div class="active-engine">
+                    <div class="engine-status">
+                        <span class="status-pulse"></span>
+                        <span id="engineStatus">AUTO ROUTER</span>
+                    </div>
+
+                    <div id="activeProvider" class="engine-provider">
+                        Awaiting task analysis
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- MODEL CONTROL -->
+            <section class="hud-panel">
+
+                <div class="panel-heading">
+                    <span>MODEL CONTROL</span>
+                </div>
+
+                <div class="control-row">
+                    <label>MODE</label>
+                    <select id="modeSelector">
+                        <option value="auto">AUTO — BEST MODEL</option>
+                        <option value="manual">MANUAL SELECTION</option>
+                    </select>
+                </div>
+
+                <div id="manualModelControls">
+
+                    <div class="control-row">
+                        <label>PROVIDER</label>
+                        <select id="providerSelector">
+                            <option value="auto">AUTOMATIC</option>
+                            <option value="gemini">GEMINI</option>
+                            <option value="groq">GROQ</option>
+                            <option value="mistral">MISTRAL</option>
+                            <option value="openrouter">OPENROUTER</option>
+                            <option value="replicate">REPLICATE</option>
+                            <option value="kie">KIE AI</option>
+                        </select>
+                    </div>
+
+                    <div class="control-row">
+                        <label>MODEL</label>
+                        <select id="modelSelector">
+                            <option value="auto">AUTOMATIC</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="routing-badge">
+                    <span>FREE PRIORITY</span>
+                    <strong>ENABLED</strong>
+                </div>
+
+            </section>
+
+
+            <!-- TASK PROFILE -->
+            <section class="hud-panel">
+
+                <div class="panel-heading">
+                    <span>TASK PROFILE</span>
+                </div>
+
+                <div class="task-grid">
+
+                    <button class="task active" data-task="chat">
+                        <b>CHAT</b>
+                        <span>General</span>
+                    </button>
+
+                    <button class="task" data-task="reasoning">
+                        <b>REASON</b>
+                        <span>Logic</span>
+                    </button>
+
+                    <button class="task" data-task="coding">
+                        <b>CODE</b>
+                        <span>Build</span>
+                    </button>
+
+                    <button class="task" data-task="research">
+                        <b>RESEARCH</b>
+                        <span>Analyze</span>
+                    </button>
+
+                    <button class="task" data-task="vision">
+                        <b>VISION</b>
+                        <span>Images</span>
+                    </button>
+
+                    <button class="task" data-task="image">
+                        <b>IMAGE</b>
+                        <span>Generate</span>
+                    </button>
+
+                    <button class="task" data-task="video">
+                        <b>VIDEO</b>
+                        <span>Generate</span>
+                    </button>
+
+                    <button class="task" data-task="audio">
+                        <b>AUDIO</b>
+                        <span>Generate</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROVIDER MATRIX -->
+            <section class="hud-panel">
+
+                <div class="panel-heading">
+                    <span>PROVIDER MATRIX</span>
+                    <span id="providerCount">6 ACTIVE</span>
+                </div>
+
+                <div class="provider-matrix">
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>GEMINI</span>
+                        <small>TEXT</small>
+                    </div>
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>GROQ</span>
+                        <small>FAST</small>
+                    </div>
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>MISTRAL</span>
+                        <small>TEXT</small>
+                    </div>
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>OPENROUTER</span>
+                        <small>MULTI</small>
+                    </div>
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>REPLICATE</span>
+                        <small>MEDIA</small>
+                    </div>
+
+                    <div class="provider">
+                        <span class="provider-dot"></span>
+                        <span>KIE AI</span>
+                        <small>IMAGE</small>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SYSTEM TELEMETRY -->
+            <section class="hud-panel telemetry-panel">
+
+                <div class="panel-heading">
+                    <span>SYSTEM TELEMETRY</span>
+                </div>
+
+                <div class="metric">
+                    <span>CORE</span>
+                    <div class="metric-bar"><i style="width:18%"></i></div>
+                    <b id="coreMetric">18%</b>
+                </div>
+
+                <div class="metric">
+                    <span>NETWORK</span>
+                    <div class="metric-bar"><i style="width:72%"></i></div>
+                    <b>72%</b>
+                </div>
+
+                <div class="metric">
+                    <span>MEMORY</span>
+                    <div class="metric-bar"><i style="width:31%"></i></div>
+                    <b>31%</b>
+                </div>
+
+            </section>
+
+        </aside>
+
+    </main>
+
+
+    <!-- MOBILE NAV -->
+    <nav class="mobile-nav">
+
+        <button class="mobile-nav-item active">
+            <span>◉</span>
+            <small>CORE</small>
+        </button>
+
+        <button class="mobile-nav-item">
+            <span>◇</span>
+            <small>MODELS</small>
+        </button>
+
+        <button class="mobile-nav-item">
+            <span>◎</span>
+            <small>MEMORY</small>
+        </button>
+
+        <button class="mobile-nav-item">
+            <span>⌘</span>
+            <small>TOOLS</small>
+        </button>
+
+        <button class="mobile-nav-item">
+            <span>⚙</span>
+            <small>CONFIG</small>
+        </button>
+
+    </nav>
+
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

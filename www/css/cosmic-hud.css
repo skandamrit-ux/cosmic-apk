@@ -1,0 +1,266 @@
+
+/* COSMIC HUD — premium responsive visual layer */
+:root {
+  color-scheme: dark;
+  --cos-bg: #050912;
+  --cos-panel: rgba(10, 19, 33, .91);
+  --cos-panel2: rgba(13, 27, 44, .82);
+  --cos-line: rgba(81, 169, 211, .22);
+  --cos-cyan: #69e1ff;
+  --cos-blue: #759dff;
+  --cos-text: #e6f2ff;
+  --cos-muted: #8299b4;
+  --cos-green: #72f5c4;
+  --cos-radius: 12px;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--cos-bg); }
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--cos-text);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(18, 78, 124, .19), transparent 48%),
+    radial-gradient(ellipse at 100% 70%, rgba(26, 57, 115, .12), transparent 38%),
+    linear-gradient(rgba(65, 132, 172, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(65, 132, 172, .035) 1px, transparent 1px),
+    var(--cos-bg);
+  background-size: auto, auto, 32px 32px, 32px 32px, auto;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  letter-spacing: .015em;
+}
+button, input, textarea, select { font: inherit; }
+button { transition: border-color .18s, background .18s, transform .18s, color .18s; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--cos-cyan);
+  outline-offset: 3px;
+}
+::selection { color: #00121b; background: var(--cos-cyan); }
+
+/* Main layout surfaces */
+.topbar, .top-bar, header, .command-bar {
+  border-bottom: 1px solid var(--cos-line);
+  background: rgba(5, 11, 21, .84);
+  backdrop-filter: blur(18px);
+}
+.rail, .left-rail, .sidebar, .navigation-rail {
+  border-right: 1px solid var(--cos-line);
+  background: rgba(5, 12, 23, .76);
+}
+.core-stage, .main-stage, .command-core, .workspace {
+  min-width: 0;
+}
+.panel, .card, .core-panel, .telemetry-panel, .provider-panel,
+.task-panel, .command-panel, .hud-panel {
+  border: 1px solid var(--cos-line);
+  border-radius: var(--cos-radius);
+  background: linear-gradient(145deg, rgba(14, 29, 47, .88), rgba(7, 14, 26, .91));
+  box-shadow: inset 0 1px rgba(255,255,255,.025), 0 12px 35px rgba(0,0,0,.13);
+}
+h1, h2, h3 { color: #edf8ff; letter-spacing: .07em; }
+small, .muted, .subtitle, .description { color: var(--cos-muted); }
+.eyebrow, .section-label, .panel-label, .stream-tag {
+  color: var(--cos-cyan);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+/* Navigation */
+.rail-item, .nav-item, .mobile-nav button, #cosmicQuickNav button {
+  color: #92a9c3;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+}
+.rail-item:hover, .nav-item:hover, .mobile-nav button:hover,
+.rail-item.active, .nav-item.active {
+  color: var(--cos-cyan);
+  border-color: var(--cos-line);
+  background: rgba(62, 177, 225, .09);
+}
+#cosmicQuickNav {
+  gap: 6px;
+  padding: 10px 8px;
+}
+#cosmicQuickNav button {
+  padding: 9px 10px;
+  border: 1px solid var(--cos-line);
+  background: rgba(12, 29, 46, .72);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+#cosmicQuickNav button:hover {
+  color: var(--cos-cyan);
+  border-color: var(--cos-cyan);
+  box-shadow: 0 0 16px rgba(105,225,255,.08);
+}
+
+/* Core indicators */
+#sessionState, #coreLoad, #connection, #topMode, #routerState,
+#selectedModel, #engineStatus, #activeProvider {
+  overflow-wrap: anywhere;
+}
+#connection { color: var(--cos-green); }
+#latency { color: var(--cos-cyan); font-variant-numeric: tabular-nums; }
+#sessionState, #coreLoad {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .12em;
+}
+body.processing #coreLoad {
+  color: var(--cos-cyan);
+  text-shadow: 0 0 14px rgba(105,225,255,.5);
+}
+body.processing #sessionState { color: #f5cf80; }
+
+/* Conversation */
+#responseStream, .response-stream, .chat-stream {
+  min-width: 0;
+  scrollbar-color: #29465f transparent;
+  scrollbar-width: thin;
+}
+.stream-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 13px 15px;
+  border: 1px solid rgba(91, 143, 179, .15);
+  border-radius: 10px;
+  background: rgba(10, 21, 35, .74);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  animation: cos-enter .22s ease-out both;
+}
+.stream-item.user-message {
+  border-left: 2px solid var(--cos-blue);
+  background: rgba(32, 51, 86, .28);
+}
+.stream-item.assistant-message {
+  border-left: 2px solid var(--cos-cyan);
+  background: rgba(12, 36, 51, .38);
+}
+.stream-item.system-message {
+  border-left: 2px solid #e9bb70;
+  color: #d9c7a5;
+  background: rgba(59, 43, 24, .22);
+}
+.stream-tag { flex: 0 0 56px; padding-top: 3px; }
+.stream-text { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+#emptyCore { color: var(--cos-muted); }
+
+/* Inputs and controls */
+input, textarea, select, #messageInput {
+  color: var(--cos-text);
+  border: 1px solid #263e56;
+  border-radius: 9px;
+  background: rgba(4, 12, 23, .91);
+}
+input::placeholder, textarea::placeholder, #messageInput::placeholder {
+  color: #71859c;
+}
+input:focus, textarea:focus, select:focus, #messageInput:focus {
+  border-color: var(--cos-cyan);
+  box-shadow: 0 0 0 3px rgba(105,225,255,.075);
+  outline: none;
+}
+.task, .task-button, .secondary-button {
+  color: #a8bdd2;
+  border: 1px solid var(--cos-line);
+  border-radius: 8px;
+  background: rgba(13, 26, 42, .86);
+}
+.task:hover, .task.active, .task-button:hover {
+  color: var(--cos-cyan);
+  border-color: rgba(105,225,255,.7);
+  background: rgba(28, 83, 111, .27);
+}
+#sendButton, #executeButton, .primary-button {
+  color: #03131d;
+  border: 1px solid #8ceaff;
+  border-radius: 8px;
+  background: linear-gradient(110deg, #76e5ff, #8ab8ff);
+  font-weight: 800;
+  box-shadow: 0 4px 22px rgba(76, 190, 255, .13);
+}
+#sendButton:hover, #executeButton:hover, .primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 27px rgba(76, 190, 255, .22);
+}
+#sendButton:disabled { opacity: .5; cursor: wait; }
+
+/* Control center modal: history, models, memory */
+#cosmicIntegrationPanel {
+  color: var(--cos-text) !important;
+  border: 1px solid rgba(105,225,255,.34) !important;
+  border-radius: 14px !important;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(34,107,151,.16), transparent 45%),
+    rgba(5, 12, 23, .98) !important;
+  box-shadow: 0 24px 100px rgba(0,0,0,.72), 0 0 36px rgba(62,180,235,.07) !important;
+  backdrop-filter: blur(24px);
+}
+#cosmicIntegrationPanel .ci-head {
+  min-height: 58px;
+  color: var(--cos-cyan);
+  font-size: 11px;
+  letter-spacing: .13em;
+}
+#cosmicIntegrationPanel .ci-tabs {
+  gap: 7px;
+  background: rgba(9, 21, 35, .75);
+}
+#cosmicIntegrationPanel .ci-tabs button,
+#cosmicIntegrationPanel .ci-actions button {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .06em;
+}
+#cosmicIntegrationPanel .ci-item {
+  padding: 13px;
+  border-color: rgba(89,148,186,.19);
+  background: linear-gradient(110deg, rgba(13,29,46,.96), rgba(8,17,30,.96));
+  line-height: 1.55;
+}
+#cosmicIntegrationPanel .ci-item:hover {
+  border-color: rgba(105,225,255,.58);
+  background: rgba(17,45,65,.94);
+}
+#cosmicIntegrationPanel .ci-muted {
+  margin-top: 4px;
+  color: #8ca6be;
+}
+#cosmicIntegrationPanel .ci-error {
+  padding: 12px;
+  border: 1px solid rgba(255,125,125,.3);
+  border-radius: 8px;
+  background: rgba(100,25,30,.17);
+  overflow-wrap: anywhere;
+}
+
+/* Motion and small screens */
+@keyframes cos-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media (max-width: 760px) {
+  body { background-size: auto, auto, 25px 25px, 25px 25px, auto; }
+  .topbar, .top-bar { padding-left: 12px; padding-right: 12px; }
+  .rail, .left-rail, .sidebar, .navigation-rail {
+    border-right: 0;
+  }
+  #responseStream { padding: 8px; }
+  .stream-item { gap: 8px; padding: 11px; }
+  .stream-tag { flex-basis: 49px; font-size: 9px; }
+  #cosmicQuickNav { padding: 8px 4px; }
+  #cosmicQuickNav button { flex: 1; padding: 10px 5px; }
+  #cosmicIntegrationPanel { inset: 3vh 3vw; width: 94vw; }
+}

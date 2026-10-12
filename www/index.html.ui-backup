@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COSMIC AI</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050b;color:#dff7ff;font-family:Arial,Helvetica,sans-serif}
+body{
+ background:
+ radial-gradient(circle at 50% 45%,rgba(0,190,255,.10),transparent 24%),
+ radial-gradient(circle at 50% 50%,rgba(30,90,255,.07),transparent 45%),
+ #02050b;
+}
+#app{width:100%;height:100%;position:relative;overflow:hidden}
+canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 5px)}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,transparent 45%,rgba(0,0,0,.72) 100%)}
+.top{
+ position:absolute;top:0;left:0;right:0;height:72px;padding:14px 18px;
+ display:flex;align-items:center;justify-content:space-between;
+ background:linear-gradient(180deg,rgba(2,8,18,.94),rgba(2,8,18,.25));
+ border-bottom:1px solid rgba(0,210,255,.22)
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+ width:42px;height:42px;border:1px solid #22dfff;border-radius:50%;
+ display:grid;place-items:center;color:#22dfff;font-size:17px;
+ box-shadow:0 0 22px #00cfff55,inset 0 0 14px #00cfff22;
+ animation:pulse 2.2s infinite
+}
+.name{font-size:18px;font-weight:700;letter-spacing:4px}
+.status{font-size:10px;letter-spacing:2px;color:#65e9ff;margin-top:3px}
+.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#28ff9b;box-shadow:0 0 10px #28ff9b;margin-right:5px}
+.topright{display:flex;gap:8px;align-items:center}
+.chip{border:1px solid #19bddd44;background:#071421aa;padding:7px 10px;border-radius:20px;font-size:10px;color:#80eaff}
+.panel{
+ position:absolute;background:linear-gradient(145deg,rgba(7,18,31,.83),rgba(3,9,17,.55));
+ border:1px solid rgba(36,214,255,.23);
+ box-shadow:0 0 30px rgba(0,185,255,.06),inset 0 0 25px rgba(0,150,255,.025);
+ backdrop-filter:blur(12px);border-radius:14px
+}
+.left{left:16px;top:92px;width:190px;padding:14px}
+.right{right:16px;top:92px;width:190px;padding:14px}
+.ptitle{font-size:9px;letter-spacing:2px;color:#4fe6ff;margin-bottom:12px}
+.metric{margin:11px 0}
+.metric label{display:flex;justify-content:space-between;font-size:9px;color:#7797a8}
+.bar{height:3px;background:#102633;border-radius:5px;margin-top:5px;overflow:hidden}
+.bar b{display:block;height:100%;background:linear-gradient(90deg,#008cff,#29efff);box-shadow:0 0 9px #00d9ff;width:68%}
+.center{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:min(70vw,500px);height:min(70vw,500px);display:grid;place-items:center
+}
+.orb{
+ width:42%;height:42%;border-radius:50%;position:relative;
+ background:
+ radial-gradient(circle at 42% 35%,#bffaff 0 2%,#39eaff 7%,#008eff 24%,#063d8e 48%,#02091d 72%);
+ box-shadow:0 0 30px #00d9ff,0 0 80px #008cff77,0 0 150px #006eff44,inset 0 0 35px #9fffff;
+ animation:orb 3.2s ease-in-out infinite
+}
+.orb:before,.orb:after{content:"";position:absolute;inset:-25%;border:1px solid #23dcff55;border-radius:50%;animation:spin 8s linear infinite}
+.orb:after{inset:-43%;border-color:#8a56ff44;animation-duration:13s;animation-direction:reverse}
+.ring{position:absolute;border-radius:50%;border:1px solid #28e4ff44}
+.r1{inset:4%;animation:spin 18s linear infinite}
+.r2{inset:13%;border-style:dashed;animation:spin 12s linear infinite reverse}
+.r3{inset:24%;border-color:#835cff33}
+.cross{position:absolute;width:70%;height:70%;border-left:1px solid #28e4ff22;border-right:1px solid #28e4ff22}
+.coretext{position:absolute;text-align:center;z-index:3}
+.coretext strong{display:block;font-size:12px;letter-spacing:5px}
+.coretext span{font-size:8px;color:#74dbf5;letter-spacing:2px}
+.wake{
+ position:absolute;bottom:31%;left:50%;transform:translateX(-50%);
+ color:#63eaff;font-size:9px;letter-spacing:2px;text-align:center;
+ text-shadow:0 0 12px #00cfff;white-space:nowrap
+}
+.wake.active{color:#6dffb3;text-shadow:0 0 15px #00ff91}
+.chat{
+ position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+ width:min(720px,calc(100% - 32px));height:150px;padding:12px;
+ display:flex;flex-direction:column
+}
+.messages{flex:1;overflow:auto;padding:2px 5px;font-size:12px}
+.msg{margin:7px 0;padding:8px 10px;border-left:2px solid #20dfff;background:#07152088;border-radius:5px}
+.msg.user{border-color:#9b69ff;text-align:right}
+.inputrow{display:flex;gap:7px}
+input{
+ flex:1;background:#020b13;border:1px solid #1b5268;border-radius:9px;
+ padding:11px;color:#dffaff;outline:none
+}
+button{
+ border:1px solid #20dfff55;background:#071824;color:#65eaff;
+ border-radius:9px;padding:0 13px;font-weight:700
+}
+button:active{transform:scale(.96)}
+.voicebtn{font-size:17px;width:48px}
+.footer{
+ position:absolute;left:18px;right:18px;bottom:178px;
+ display:flex;justify-content:space-between;font-size:8px;letter-spacing:1.5px;color:#496c7b
+}
+.badge{color:#55e7ff}
+@keyframes pulse{50%{box-shadow:0 0 40px #00cfff88,inset 0 0 20px #00cfff44}}
+@keyframes orb{50%{transform:scale(1.06);box-shadow:0 0 45px #00d9ff,0 0 110px #008cff88,0 0 180px #006eff55,inset 0 0 45px #bfffff}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){
+ .left,.right{width:145px;padding:10px;top:84px}
+ .left{left:8px}.right{right:8px}
+ .metric{margin:8px 0}.metric label{font-size:8px}
+ .center{width:88vw;height:88vw}
+ .chat{height:145px}.footer{display:none}
+}
+
+.history{
+ position:absolute;left:16px;top:92px;width:250px;height:calc(100% - 270px);
+ padding:14px;z-index:10;display:flex;flex-direction:column;
+}
+.historySearch{
+ width:100%;padding:9px;background:#020b13;border:1px solid #1b5268;
+ border-radius:8px;color:#dffaff;outline:none;margin-bottom:10px;
+}
+.historyList{flex:1;overflow:auto}
+.historyItem{
+ padding:10px;margin-bottom:6px;border:1px solid #173747;
+ border-radius:8px;background:#06131eaa;cursor:pointer;
+}
+.historyItem:hover{border-color:#20dfff}
+.historyItem b{
+ display:block;font-size:10px;color:#9defff;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;
+}
+.historyItem span{
+ display:block;font-size:8px;color:#63808d;margin-top:4px;
+}
+.memoryTitle{
+ margin-top:12px;padding-top:10px;border-top:1px solid #173747;
+ font-size:9px;letter-spacing:2px;color:#4fe6ff;
+}
+@media(max-width:700px){
+ .history{left:8px;top:84px;width:170px;height:calc(100% - 260px)}
+ .right{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<canvas id="space"></canvas>
+<div class="scan"></div><div class="vignette"></div>
+
+<header class="top">
+ <div class="brand">
+  <div class="logo">C</div>
+  <div><div class="name">COSMIC</div><div class="status"><i></i><span id="online">INITIALIZING</span></div></div>
+ </div>
+ <div class="topright">
+  <div class="chip" id="voiceState">VOICE OFF</div>
+  <div class="chip">GEMINI</div>
+ </div>
+</header>
+
+<section class="panel left">
+ <div class="ptitle">SYSTEM TELEMETRY</div>
+ <div class="metric"><label>CORE <span id="core">ONLINE</span></label><div class="bar"><b style="width:96%"></b></div></div>
+ <div class="metric"><label>MEMORY <span>READY</span></label><div class="bar"><b style="width:82%"></b></div></div>
+ <div class="metric"><label>AI LINK <span id="ai">CHECK</span></label><div class="bar"><b id="aibar" style="width:70%"></b></div></div>
+ <div class="metric"><label>VOICE <span id="vstate">STANDBY</span></label><div class="bar"><b id="vbar" style="width:20%"></b></div></div>
+</section>
+
+<section class="panel right">
+ <div class="ptitle">COSMIC CONTROL</div>
+ <div class="metric"><label>WAKE WORDS</label><div style="margin-top:8px;font-size:9px;line-height:1.8;color:#9ac4d2">COSMIC<br>OK COSMIC<br>HI COSMIC</div></div>
+ <button id="voiceToggle" style="width:100%;height:34px">ACTIVATE VOICE</button>
+ <button id="greet" style="width:100%;height:34px;margin-top:7px">VOICE GREETING</button>
+</section>
+
+
+<section class="panel history">
+ <div class="ptitle">CONVERSATION HISTORY</div>
+ <input id="historySearch" class="historySearch" placeholder="Search conversations...">
+ <div id="historyList" class="historyList"></div>
+ <div class="memoryTitle">PERSISTENT MEMORY</div>
+ <div id="memoryCount" style="font-size:10px;color:#9ac4d2;margin-top:6px">Loading...</div>
+</section>
+
+<main class="center">
+ <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+ <div class="cross"></div><div class="orb" id="orb"></div>
+ <div class="coretext"><strong>COSMIC</strong><span id="coreMode">CORE ACTIVE</span></div>
+ <div class="wake" id="wake">VOICE STANDBY · SAY “OK COSMIC”</div>
+</main>
+
+<div class="footer"><span>PERSONAL AI OPERATING SYSTEM</span><span class="badge" id="connection">BACKEND: CHECKING</span></div>
+
+<section class="panel chat">
+ <div class="messages" id="messages">
+  <div class="msg">COSMIC initialized. Voice control is ready.</div>
+ </div>
+ <div class="inputrow">
+  <input id="input" placeholder="Talk to COSMIC or type a command…">
+  <button class="voicebtn" id="mic">🎙</button>
+  <button id="send">SEND</button>
+ </div>
+</section>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8001";
+let recognition=null, voiceOn=false, awake=false, listeningCommand=false;
+
+const $=id=>document.getElementById(id);
+function addMsg(text,user=false){
+ const d=document.createElement("div");
+ d.className="msg"+(user?" user":"");
+ d.textContent=text;$("messages").appendChild(d);
+ $("messages").scrollTop=$("messages").scrollHeight;
+}
+function speak(text){
+ if(!("speechSynthesis" in window)) return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.rate=.98;u.pitch=.95;u.volume=1;
+ speechSynthesis.speak(u);
+}
+function wake(){
+ awake=true;listeningCommand=true;
+ $("wake").textContent="COSMIC AWAKE · LISTENING";
+ $("wake").classList.add("active");
+ $("vstate").textContent="AWAKE";
+ $("vbar").style.width="100%";
+ $("orb").style.transform="scale(1.16)";
+ speak("Hi sir. COSMIC is awake. What would you like me to do?");
+ setTimeout(()=>{listeningCommand=false},1800);
+}
+function isWake(t){
+ t=t.toLowerCase().replace(/[.,!?]/g," ").replace(/\s+/g," ").trim();
+ return t==="cosmic" || t.includes("okay cosmic") || t.includes("ok cosmic") ||
+        t.includes("hi cosmic") || t.includes("hey cosmic") ||
+        t.startsWith("cosmic ");
+}
+async function sendCommand(text){
+ if(!text.trim())return;
+ addMsg(text,true);$("input").value="";
+ $("coreMode").textContent="PROCESSING";
+ try{
+   const r=await fetch(API+"/api/chat",{
+     method:"POST",headers:{"Content-Type":"application/json"},
+     body:JSON.stringify({message:text,provider:"gemini"})
+   });
+   const data=await r.json();
+   const answer=data.message || data.response || data.error || "I could not complete that request.";
+   addMsg(answer);
+   speak(answer);
+ }catch(e){
+   addMsg("COSMIC backend is not connected.");
+   speak("I cannot reach my core server.");
+ }
+ $("coreMode").textContent="CORE ACTIVE";
+}
+function startRecognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){
+   addMsg("Speech recognition is not supported by this browser.");
+   return;
+ }
+ recognition=new SR();
+ recognition.continuous=true;
+ recognition.interimResults=true;
+ recognition.lang="en-US";
+ recognition.onstart=()=>{
+   $("voiceState").textContent="VOICE ON";
+   $("vstate").textContent="LISTENING";
+   $("wake").textContent='LISTENING · SAY “COSMIC”';
+   $("vbar").style.width="72%";
+ };
+ recognition.onresult=e=>{
+   let finalText="";
+   for(let i=e.resultIndex;i<e.results.length;i++){
+     const t=e.results[i][0].transcript.trim();
+     if(e.results[i].isFinal) finalText+=" "+t;
+   }
+   finalText=finalText.trim();
+   if(!finalText)return;
+
+   if(isWake(finalText)){
+     const cleaned=finalText.replace(/^(hey |hi |okay |ok )?cosmic[ ,.!?]*/i,"").trim();
+     if(cleaned){wake();setTimeout(()=>sendCommand(cleaned),900);}
+     else wake();
+     return;
+   }
+
+   if(awake && !listeningCommand){
+     awake=false;
+     $("wake").textContent='LISTENING · SAY “COSMIC”';
+     $("wake").classList.remove("active");
+     $("vstate").textContent="STANDBY";
+     $("vbar").style.width="20%";
+     sendCommand(finalText);
+   }
+ };
+ recognition.onerror=e=>{
+   addMsg("VOICE ERROR: " + e.error);
+ };
+ recognition.onend=()=>{
+   if(voiceOn){try{recognition.start()}catch(e){}}
+ };
+ try{recognition.start()}catch(e){}
+}
+function toggleVoice(){
+ voiceOn=!voiceOn;
+ if(voiceOn){
+   startRecognition();
+ }else{
+   if(recognition) recognition.stop();
+   $("voiceState").textContent="VOICE OFF";
+   $("vstate").textContent="STANDBY";
+   $("vbar").style.width="20%";
+   $("wake").textContent='VOICE STANDBY · SAY “OK COSMIC”';
+   $("wake").classList.remove("active");
+ }
+}
+
+async function loadHistory(query=""){
+ try{
+  const url=query
+   ? API+"/api/memory/search?q="+encodeURIComponent(query)
+   : API+"/api/history?limit=100";
+
+  const r=await fetch(url);
+  const data=await r.json();
+  const list=$("historyList");
+  list.innerHTML="";
+
+  const items=data.items||[];
+
+  if(!items.length){
+   list.innerHTML='<div style="font-size:9px;color:#63808d;padding:8px">No conversations found.</div>';
+   return;
+  }
+
+  items.forEach(item=>{
+   const d=document.createElement("div");
+   d.className="historyItem";
+
+   const text=item.message||"";
+   const date=item.created_at||"";
+
+   d.innerHTML="<b>"+escapeHTML(text)+"</b><span>"+escapeHTML(date)+"</span>";
+
+   d.onclick=()=>{
+    addMsg("You: "+text,true);
+    addMsg(item.response||"");
+   };
+
+   list.appendChild(d);
+  });
+ }catch(e){
+  $("historyList").innerHTML='<div style="font-size:9px;color:#ff7888;padding:8px">History unavailable.</div>';
+ }
+}
+
+async function loadMemoryCount(){
+ try{
+  const r=await fetch(API+"/api/memories");
+  const data=await r.json();
+  const count=(data.items||[]).length;
+  $("memoryCount").textContent=count+" persistent memories stored";
+ }catch(e){
+  $("memoryCount").textContent="Memory unavailable";
+ }
+}
+
+function escapeHTML(value){
+ return String(value)
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
+}
+
+$("historySearch").addEventListener("input",e=>{
+ loadHistory(e.target.value.trim());
+});
+
+loadHistory();
+loadMemoryCount();
+
+async function health(){
+ try{
+  const r=await fetch(API+"/api/health");
+  const d=await r.json();
+  $("online").textContent="COSMIC ONLINE";
+  $("connection").textContent="BACKEND: ONLINE";
+  $("ai").textContent="READY";
+  $("aibar").style.width="100%";
+ }catch(e){
+  $("online").textContent="GUI ONLINE";
+  $("connection").textContent="BACKEND: OFFLINE";
+  $("ai").textContent="OFFLINE";
+  $("aibar").style.width="15%";
+ }
+}
+$("voiceToggle").onclick=toggleVoice;
+$("mic").onclick=toggleVoice;
+$("greet").onclick=()=>speak("Hi sir. COSMIC is online and ready. What would you like me to do?");
+$("send").onclick=()=>sendCommand($("input").value);
+$("input").addEventListener("keydown",e=>{if(e.key==="Enter")sendCommand($("input").value)});
+
+const c=$("space"),x=c.getContext("2d");let stars=[];
+function resize(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);stars=Array.from({length:180},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.5+.2,v:Math.random()*.25+.05}))}
+function draw(){
+ x.clearRect(0,0,innerWidth,innerHeight);
+ for(const s of stars){
+  s.y+=s.v;if(s.y>innerHeight)s.y=0;
+  x.fillStyle=`rgba(80,210,255,${.25+s.r/3})`;x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);x.fill();
+ }
+ requestAnimationFrame(draw);
+}
+addEventListener("resize",resize);resize();draw();health();setInterval(health,5000);
+</script>
+</body>
+</html>

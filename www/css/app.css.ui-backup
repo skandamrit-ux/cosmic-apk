@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #050810;
+    color: #e8f1ff;
+    font-family: Arial, sans-serif;
+}
+
+.cosmic {
+    max-width: 800px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    letter-spacing: 6px;
+}
+
+.chat {
+    margin-top: 30px;
+    display: grid;
+    gap: 12px;
+}
+
+input,
+button {
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #334;
+    font-size: 16px;
+}
+
+button {
+    cursor: pointer;
+}
+
+pre {
+    white-space: pre-wrap;
+    padding: 15px;
+}
